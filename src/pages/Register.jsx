@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { SIGNUP_URL } from "../api.js";
 
 export default function Register() {
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
 
   const onChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -9,15 +12,21 @@ export default function Register() {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:3000/api/auth/signup', {
+      const res = await fetch(SIGNUP_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      console.log('Success: ', data);
+      if (res.ok) {
+        console.log('Signup success:', data);
+        localStorage.setItem('token', data.token);
+        navigate('/books');
+      } else {
+        alert(data.error || 'Signup failed');
+      }
     } catch (err) {
-      console.log('Error: ', err);
+      console.log('Error:', err);
     }
   };
 

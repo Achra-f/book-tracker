@@ -1,16 +1,26 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './Layout.jsx';
 import Register from './pages/Register.jsx';
 import Login from './pages/Login.jsx';
-import Books from './pages/Books.jsx';
+import Index from './pages/books/index.jsx';
+import Home from './pages/Home.jsx';
+import ProtectedRoute from "./ProtectedRoute.jsx";
+import Post from "./pages/books/post.jsx";
 
 export default function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/signup" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/books" element={<Books />} />
-      </Routes>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Layout />}>
+                    <Route index element={<Home />} />
+                    <Route path="signup" element={<Register />} />
+                    <Route path="login" element={<Login />} />
+                    <Route element={<ProtectedRoute />} >
+                        <Route path="books" element={<Index />} />
+                        <Route path="books/add" element={<Post />} />
+                    </Route>
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    );
 }
