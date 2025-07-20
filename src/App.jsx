@@ -6,6 +6,7 @@ import Index from './pages/books/index.jsx';
 import Home from './pages/Home.jsx';
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import Post from "./pages/books/post.jsx";
+import GuestRoute from "./GuestRoute.jsx";
 
 export default function App() {
     return (
@@ -13,8 +14,12 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
-                    <Route path="signup" element={<Register />} />
-                    <Route path="login" element={<Login />} />
+
+                    <Route element={<GuestRoute />}>
+                        <Route path="signup" element={<Register />} />
+                        <Route path="login" element={<Login />} />
+                    </Route>
+
                     <Route element={<ProtectedRoute />} >
                         <Route path="books" element={<Index />} />
                         <Route path="books/add" element={<Post />} />

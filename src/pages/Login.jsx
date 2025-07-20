@@ -1,81 +1,36 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { LOGIN_URL } from "../api.js";
+import AuthForm from "../components/authForm.jsx";
+import {LOGIN_URL} from "../api.js";
+import {Link, useNavigate} from "react-router-dom";
+import {useAuth} from "../AuthContext.jsx";
+import {useEffect} from "react";
 
-export default function Login() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+export default function Register() {
   const navigate = useNavigate();
+  const { login, isLoggedIn } = useAuth();
 
-  const onChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch(LOGIN_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        console.log('Login success:', data);
-        localStorage.setItem('token', data.token);
-        navigate('/books');
-      } else {
-        alert(data.error || 'Login failed');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  useEffect(() => {
+    if (isLoggedIn) navigate('/books');
+  }, [isLoggedIn, navigate]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-base-200">
-      <div className="card w-full max-w-md shadow-2xl bg-base-100">
-        <form className="card-body" onSubmit={onSubmit}>
-          <h2 className="text-2xl font-bold text-center">Login</h2>
-
-          <div className="form-control flex justify-between">
-            <label className="label">
-              <span className="label-text">Email:</span>
-            </label>
-            <input
-              type="email"
-              name="email"
-              placeholder="you@example.com"
-              className="input input-bordered"
-              onChange={onChange}
-              required
-            />
-          </div>
-
-          <div className="form-control flex justify-between">
-            <label className="label">
-              <span className="label-text">Password:</span>
-            </label>
-            <input
-              type="password"
-              name="password"
-              placeholder="••••••••"
-              className="input input-bordered"
-              onChange={onChange}
-              required
-            />
-          </div>
-
-          <div className="form-control mt-6">
-            <button className="btn btn-primary" type="submit">
-              Log In
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+      <AuthForm
+          title={"Log In"}
+          apiUrl={LOGIN_URL}
+          buttonText={"Log In"}
+          onSuccess={data => {
+            login(data.token);
+            navigate('/books');
+          }}
+          renderFooter= {
+            <div className="flex justify-between flex-col sm:flex-row gap-2">
+              <Link href="/forgot" className="link link-hover text-xs">
+                Forgot password?
+              </Link>
+              <Link to="/signup" className="link link-hover text-xs">
+                No account?
+              </Link>
+            </div>
+          }
+      />
+  )
 }
