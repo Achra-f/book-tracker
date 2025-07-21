@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from "../AuthContext.jsx"
+import { useAuth } from "../AuthContext.jsx";
 
 export default function Navbar() {
     const { isLoggedIn, logout } = useAuth();
@@ -11,22 +11,30 @@ export default function Navbar() {
     };
 
     return (
-        <div className="navbar bg-base-100 shadow-sm flex justify-between">
-            <a className="btn btn-ghost text-xl" href="/">Book app</a>
+        <div className="navbar bg-base-100 shadow-sm px-4">
+            <div className="flex-1">
+                <Link to="/" className="btn btn-ghost text-xl">Book App</Link>
+            </div>
 
-            <div className="flex flex-col gap-5 sm:flex-row">
-                {!isLoggedIn && (
-                    <>
-                        <Link to="/login" className="link link-primary">Login</Link>
-                        <Link to="/signup" className="link link-primary">Sign up me</Link>
-                    </>
-                )}
+            <div className="flex-none">
+                <ul className="menu menu-horizontal px-1">
+                    {!isLoggedIn && (
+                        <>
+                            <li>
+                                <Link to="/login" className="text-base-content hover:text-primary">Login</Link>
+                            </li>
+                            <li>
+                                <Link to="/signup" className="text-base-content hover:text-primary">Sign up</Link>
+                            </li>
+                        </>
+                    )}
 
-                {isLoggedIn && (
-                    <button className="btn btn-ghost" onClick={handleLogout}>
-                        Logout
-                    </button>
-                )}
+                    {isLoggedIn && (
+                        <li>
+                            <button onClick={handleLogout} className="btn btn-ghost">Logout</button>
+                        </li>
+                    )}
+                </ul>
             </div>
         </div>
     );

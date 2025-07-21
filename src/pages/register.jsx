@@ -1,4 +1,4 @@
-import AuthForm from "../components/authForm.jsx";
+import AuthForm from "../components/AuthForm.jsx";
 import {SIGNUP_URL} from "../api.js";
 import {Link, useNavigate} from "react-router-dom";
 import {useAuth} from "../AuthContext.jsx";
