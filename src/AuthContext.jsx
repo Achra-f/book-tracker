@@ -1,9 +1,21 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import {createContext, useState, useContext, useEffect} from "react";
+import {jwtDecode} from "jwt-decode";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-    const [token, setToken] = useState(() => localStorage.getItem('token'));
+    const [token, setToken] = useState(() => {
+        const storedToken = localStorage.getItem('token');
+        if (!storedToken) return null;
+
+        try {
+            const decoded = jwtDecode(storedToken);
+            const isExpired = decoded.exp * 1000 < Date.now();
+            return isExpired ? null : storedToken;
+        } catch {
+            return null;
+        }
+    });
 
     const login = (newToken) => {
         localStorage.setItem('token', newToken);
@@ -17,9 +29,19 @@ export function AuthProvider({ children }) {
 
 
     useEffect(() => {
-        const syncAuth = async () => {
-            setToken(localStorage.getItem('token'));
+        const syncAuth = () => {
+            const storedToken = localStorage.getItem('token');
+            if (!storedToken) return setToken(null);
+
+            try {
+                const decoded = jwtDecode(storedToken);
+                const isExpired = decoded.exp * 1000 < Date.now();
+                setToken(isExpired ? null : storedToken);
+            } catch {
+                setToken(null);
+            }
         };
+
         window.addEventListener('storage', syncAuth);
         return () => window.removeEventListener('storage', syncAuth);
     }, []);

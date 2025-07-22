@@ -1,5 +1,5 @@
 import AuthForm from "../components/AuthForm.jsx";
-import {LOGIN_URL} from "../api.js";
+import {LOGIN_URL} from "../api/api.js";
 import {Link, useNavigate} from "react-router-dom";
 import {useAuth} from "../AuthContext.jsx";
 import {useEffect} from "react";
