@@ -1,5 +1,6 @@
 import {createContext, useState, useContext, useEffect} from "react";
 import {jwtDecode} from "jwt-decode";
+import toast from "react-hot-toast";
 
 const AuthContext = createContext();
 
@@ -20,6 +21,7 @@ export function AuthProvider({ children }) {
     const login = (newToken) => {
         localStorage.setItem('token', newToken);
         setToken(newToken);
+        toast.success("Login succeeded");
     };
 
     const logout = () => {

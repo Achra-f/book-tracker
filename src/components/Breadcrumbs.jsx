@@ -27,17 +27,11 @@ export default function Breadcrumbs() {
             .finally(() => setLoadingTitle(false));
     }, [bookId]);
 
-    // No breadcrumbs on the public landing page "/"
     if (segments.length === 0) return null;
-
-    // Helper to format label nicely
-    const formatLabel = (label) =>
-        label.charAt(0).toUpperCase() + label.slice(1);
 
     return (
         <nav className="breadcrumbs text-sm mb-4" aria-label="Breadcrumb">
             <ul>
-                {/* Dashboard crumb */}
                 {segments[0] === "dashboard" && segments.length === 1 ? (
                     <li aria-current="page">Dashboard</li>
                 ) : (
@@ -46,7 +40,6 @@ export default function Breadcrumbs() {
                     </li>
                 )}
 
-                {/* Books section crumbs */}
                 {segments[0] === "books" && (
                     <>
                         <li>

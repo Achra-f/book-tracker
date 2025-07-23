@@ -46,9 +46,9 @@ export const apiClient = {
         return handleResponse(res);
     },
 
-    put: async (path, body) => {
+    patch: async (path, body) => {
         const res = await fetch(`${API_BASE_URL}${path}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: getAuthHeaders(),
             body: JSON.stringify(body),
         });

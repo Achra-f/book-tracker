@@ -1,66 +1,84 @@
-import React, { useState } from "react";
-import { bookCreateSchema } from "../validation/bookSchema.js";
-import {Link, useNavigate} from "react-router-dom";
-import {apiClient} from "../api/apiClient.js";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
-const AddBookForm = () => {
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({
+const BookForm = ({
+                      onSubmit,
+                      initialData = {},
+                      submitLabel = "Add Book",
+                      loading = false,
+                      validationSchema,
+                      backTo = "/books",
+                  }) => {
+    const [formData, setFormData] = useState(() => ({
         title: '',
         author: '',
         year: '',
         genre: '',
         coverImageUrl: '',
         readStatus: '',
-    });
-    const [errors, setErrors] = useState({});
-    const [loading, setLoading] = useState(false);
+        ...initialData,
+    }));
 
-    const onChange = (e)  => {
+    const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        if (Object.keys(initialData).length > 0) {
+            setFormData({
+                title: '',
+                author: '',
+                year: '',
+                genre: '',
+                coverImageUrl: '',
+                readStatus: '',
+                ...initialData,
+            });
+        }
+    }, [initialData]);
+
+
+    const onChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const onSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const parsedData = {
+            ...formData,
+            year: formData.year === "" ? undefined : Number(formData.year),
+            coverImageUrl: formData.coverImageUrl?.trim() || undefined,
+        };
+
         try {
-            const parsedData = {
-                ...formData,
-                year: formData.year === '' ? undefined : Number(formData.year),
-                coverImageUrl: formData.coverImageUrl.trim() === '' ? undefined : formData.coverImageUrl.trim(),
-            };
-            bookCreateSchema.parse(parsedData);
+            if (validationSchema) validationSchema.parse(parsedData);
             setErrors({});
-            setLoading(true);
-
-            await apiClient.post('/api/books', parsedData)
-            toast.success('Book added successfully!');
-
-            navigate('/books')
+            await onSubmit(parsedData);
         } catch (err) {
             if (err.errors) {
-                const zodErrors = err.errors;
-                err.errors.forEach(e => {
+                const zodErrors = {};
+                err.errors.forEach((e) => {
                     zodErrors[e.path[0]] = e.message;
                 });
                 setErrors(zodErrors);
             } else {
-                setErrors({ form: err.message });
+                toast.error("Unexpected error: " + err.message);
             }
-        } finally {
-            setLoading(false);
         }
     };
+
     return (
         <div className="flex flex-col items-center">
             <div className="w-full max-w-md flex items-center justify-between mb-4">
-                <h1 className="text-2xl font-bold">Add New Book</h1>
-                <Link to="/dashboard" className="btn btn-primary">Back</Link>
+                <h1 className="text-2xl font-bold">{submitLabel}</h1>
+                <Link to={backTo} className="btn btn-primary">
+                    Back
+                </Link>
             </div>
             <div className="card bg-base-100 w-full max-w-md shadow-2xl">
                 <div className="p-4">
-                    <form onSubmit={onSubmit} className="max-w-md mx-auto p-4 space-y-4 bg-">
+                    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 space-y-4">
                         {errors.form && <p className="text-red-500">{errors.form}</p>}
                         <fieldset className="fieldset">
                             <label className="label">Title</label>
@@ -102,7 +120,6 @@ const AddBookForm = () => {
                                 className="input"
                             />
 
-
                             <label className="label">Cover Image URL</label>
                             <input
                                 name="coverImageUrl"
@@ -112,7 +129,6 @@ const AddBookForm = () => {
                                 placeholder="https://example.com/image.jpg"
                             />
                             {errors.coverImageUrl && <p className="text-red-500">{errors.coverImageUrl}</p>}
-
 
                             <label className="label">Read status</label>
                             <select
@@ -133,10 +149,9 @@ const AddBookForm = () => {
                                 disabled={loading}
                                 className="btn btn-success mt-4"
                             >
-                                {loading ? 'Adding...' : 'Add Book'}
+                                {loading ? `${submitLabel}...` : submitLabel}
                             </button>
                         </fieldset>
-
                     </form>
                 </div>
             </div>
@@ -144,4 +159,4 @@ const AddBookForm = () => {
     );
 };
 
-export default AddBookForm;
+export default BookForm;
