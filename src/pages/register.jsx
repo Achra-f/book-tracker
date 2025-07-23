@@ -9,7 +9,7 @@ export default function Register() {
   const { login, isLoggedIn } = useAuth();
 
   useEffect(() => {
-    if (isLoggedIn) navigate('/books');
+    if (isLoggedIn) navigate('/dashboard');
   }, [isLoggedIn, navigate]);
 
   return (
@@ -17,6 +17,7 @@ export default function Register() {
           title={"Sign Up"}
           apiUrl={SIGNUP_URL}
           buttonText={"Sign Up"}
+          text="Join us today and start your personalized book journey!"
           extraFields={[
             {
               name: "confirmPassword",
@@ -27,7 +28,7 @@ export default function Register() {
           ]}
           onSuccess={data => {
             login(data);
-            navigate('/books');
+            navigate('/dashboard');
           }}
           renderFooter= {
             <div className="flex">

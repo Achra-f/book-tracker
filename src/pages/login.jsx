@@ -9,7 +9,7 @@ export default function Register() {
   const { login, isLoggedIn } = useAuth();
 
   useEffect(() => {
-    if (isLoggedIn) navigate('/books');
+    if (isLoggedIn) navigate('/dashboard');
   }, [isLoggedIn, navigate]);
 
   return (
@@ -17,13 +17,14 @@ export default function Register() {
           title={"Log In"}
           apiUrl={LOGIN_URL}
           buttonText={"Log In"}
+          text={"Welcome back! Please log in to access your account."}
           onSuccess={data => {
             login(data.token);
-            navigate('/books');
+            navigate('/dashboard');
           }}
           renderFooter= {
             <div className="flex justify-between flex-col sm:flex-row gap-2">
-              <Link href="/forgot" className="link link-hover text-xs">
+              <Link to="/forgot" className="link link-hover text-xs">
                 Forgot password?
               </Link>
               <Link to="/signup" className="link link-hover text-xs">

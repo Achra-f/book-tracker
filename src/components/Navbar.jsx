@@ -1,43 +1,44 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from "../AuthContext.jsx";
 
 export default function Navbar() {
-    const { isLoggedIn, logout } = useAuth();
-    const navigate = useNavigate();
+    const { isLoggedIn } = useAuth();
 
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
+    if (isLoggedIn === null) return null;
 
     return (
-        <div className="navbar bg-base-100 shadow-sm px-4">
-            <div className="flex-1">
-                {!isLoggedIn && (
-                    <Link to="/" className="btn btn-ghost text-xl">Book Ai</Link>
-                )}
-            </div>
-
-            <div className="flex-none">
-                <ul className="menu menu-horizontal px-1">
-                    {!isLoggedIn && (
-                        <>
-                            <li>
-                                <Link to="/login" className="text-base-content hover:text-primary">Login</Link>
-                            </li>
-                            <li>
-                                <Link to="/signup" className="text-base-content hover:text-primary">Sign up</Link>
-                            </li>
-                        </>
-                    )}
-
-                    {isLoggedIn && (
+        !isLoggedIn && (
+            <nav className="navbar" role="navigation" aria-label="Main">
+                <div className="flex-1">
+                    <NavLink to="/" className="text-base-content text-xl font-bold">
+                        Book Ai
+                    </NavLink>
+                </div>
+                <div className="flex-none">
+                    <ul className="menu menu-horizontal px-1">
                         <li>
-                            <button onClick={handleLogout} className="btn btn-ghost">Logout</button>
+                            <NavLink
+                                to="/login"
+                                className={({ isActive }) =>
+                                    `text-base-content hover:text-primary ${isActive ? "font-semibold" : ""}`
+                                }
+                            >
+                                Login
+                            </NavLink>
                         </li>
-                    )}
-                </ul>
-            </div>
-        </div>
+                        <li>
+                            <NavLink
+                                to="/signup"
+                                className={({ isActive }) =>
+                                    `text-base-content hover:text-primary ${isActive ? "font-semibold" : ""}`
+                                }
+                            >
+                                Sign up
+                            </NavLink>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        )
     );
 }

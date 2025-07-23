@@ -7,6 +7,7 @@ export default function AuthForm({
     onSuccess,
     extraFields = [],
     renderFooter,
+    text,
 }) {
     const [formData, setFormData] = useState(
         {
@@ -52,16 +53,13 @@ export default function AuthForm({
     };
 
     return (
-        <div className="hero bg-base-200 min-h-screen">
-            <div className="hero-content flex-col lg:flex-row-reverse">
-                <div className="text-center lg:text-left">
+        <div className="hero">
+            <div className="hero-content flex-col lg:flex-row-reverse lg:justify-between w-full gap-8">
+                <div className="text-center sm:text-left max-w-md lg:w-1/2">
                     <h1 className="text-5xl font-bold">{title}</h1>
-                    <p className="py-6">
-                        Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-                        quasi. In deleniti eaque aut repudiandae et a id nisi.
-                    </p>
+                    <p className="py-6">{text}</p>
                 </div>
-                <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+                <div className="card bg-base-100 w-full max-w-sm shadow-2xl lg:w-1/2">
                     <div className="card-body">
                         <form onSubmit={onSubmit}>
                             <fieldset className="fieldset">
@@ -75,6 +73,7 @@ export default function AuthForm({
                                     onChange={onChange}
                                     required
                                 />
+
                                 <label className="label">Password</label>
                                 <input
                                     type="password"
@@ -85,6 +84,7 @@ export default function AuthForm({
                                     onChange={onChange}
                                     required
                                 />
+
                                 {extraFields.map(({ name, label, type = 'text', placeholder }) => (
                                     <div className="form-control" key={name}>
                                         <label className="label py-1">
@@ -104,11 +104,9 @@ export default function AuthForm({
 
                                 {renderFooter && <div className="mt-4">{renderFooter}</div>}
 
-                                {error && (
-                                    <p className="text-error ">{error}</p>
-                                )}
+                                {error && <p className="text-error">{error}</p>}
 
-                                <button className="btn btn-neutral mt-4" type="submit">
+                                <button className="btn btn-neutral mt-4 w-full" type="submit">
                                     {buttonText}
                                 </button>
                             </fieldset>

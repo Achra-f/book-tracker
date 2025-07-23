@@ -4,7 +4,7 @@ export default function GuestRoute() {
     const token = localStorage.getItem("token");
 
     if (token) {
-        return <Navigate to="/books" replace />
+        return <Navigate to="/dashboard" replace />
     }
     return <Outlet />
 }

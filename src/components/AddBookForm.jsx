@@ -56,7 +56,7 @@ const AddBookForm = () => {
         <div className="flex flex-col items-center">
             <div className="w-full max-w-md flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-bold">Add New Book</h1>
-                <Link to="/books" className="btn btn-primary">Back</Link>
+                <Link to="/dashboard" className="btn btn-primary">Back</Link>
             </div>
             <div className="card bg-base-100 w-full max-w-md shadow-2xl">
                 <div className="p-4">
@@ -141,7 +141,6 @@ const AddBookForm = () => {
                 </div>
             </div>
         </div>
-
     );
 };
 
