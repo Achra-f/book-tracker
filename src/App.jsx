@@ -15,9 +15,27 @@ import toast, {Toaster} from 'react-hot-toast';
 import Read from "./pages/books/read.jsx";
 import Dashboard from "./pages/dashboard.jsx";
 import Update from "./pages/books/update.jsx";
+import {QueryClient} from "@tanstack/react-query";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
+import Toast from "daisyui/components/toast/index.js";
+
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 1000 * 60 * 5,
+            cacheTime: 1000 * 60 * 30,
+        },
+    },
+});
+
+const persister = createSyncStoragePersister({
+    storage: window.localStorage,
+});
 
 function AppRouter() {
-    const { logout, token } = useAuth()
+    const { logout, token, loading } = useAuth()
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -26,20 +44,21 @@ function AppRouter() {
     const sessionToastShown = useRef(false);
 
     useEffect(() => {
+        if (loading) return;
+
         const onProtectedRoute = !publicRoutes.includes(location.pathname);
 
-        if (!token && onProtectedRoute && location.pathname !== '/login') {
+        if (!token && onProtectedRoute) {
             if (!sessionToastShown.current) {
                 toast.error('Session expired, please login again');
                 sessionToastShown.current = true;
             }
             navigate('/login');
         }
-
         if (token) {
             sessionToastShown.current = false;
         }
-    }, [token, location.pathname, navigate]);
+    }, [token, location.pathname, navigate, loading]);
 
     useEffect(() => {
         setLogoutCallback(() => {
@@ -75,11 +94,12 @@ function AppRouter() {
 
 export default function App() {
     return (
-        <>
-            <Toaster />
+        <PersistQueryClientProvider client={queryClient} persistOptions={{ persister, maxAge: 1000 * 60 * 5 }}>
             <BrowserRouter>
                 <AppRouter />
+                <Toaster />
             </BrowserRouter>
-        </>
-    )
+            <ReactQueryDevtools initialIsOpen={false} />
+        </PersistQueryClientProvider>
+    );
 }

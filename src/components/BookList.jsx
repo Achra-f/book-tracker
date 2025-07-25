@@ -1,30 +1,28 @@
-import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiClient } from "../api/apiClient.js";
+import {useQuery} from "@tanstack/react-query";
 
 export default function BookList() {
-    const [books, setBooks] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const {
+        data: books = [],
+        isLoading,
+        isError,
+        error,
+    } = useQuery({
+        queryKey: ['books'],
+        queryFn: async () => {
+            const data = await apiClient.get('/api/books');
+            return data;
+        },
+        staleTime: 5 * 60 * 1000,
+        cacheTime: 30 * 60 * 1000,
+        keepPreviousData: true,
+    })
 
-    useEffect(() => {
-        const fetchBooks = async () => {
-            try {
-                const data = await apiClient.get('/api/books');
-                setBooks(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
+    if (isLoading) return <span className="loading loading-spinner loading-xl"></span>;
 
-        fetchBooks();
-    }, []);
-
-    if (loading) return <p className="text-center mt-10">Loading your books...</p>;
-    if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
+    if (isError) return <p className="text-center mt-10 text-red-500">{error.message}</p>;
 
     if (books.length === 0)
         return (

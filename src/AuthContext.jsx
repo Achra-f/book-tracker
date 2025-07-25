@@ -17,6 +17,7 @@ export function AuthProvider({ children }) {
             return null;
         }
     });
+    const [loading, setLoading] = useState(true);
 
     const login = (newToken) => {
         localStorage.setItem('token', newToken);
@@ -29,19 +30,36 @@ export function AuthProvider({ children }) {
         setToken(null)
     };
 
-
     useEffect(() => {
-        const syncAuth = () => {
+        const checkToken = () => {
             const storedToken = localStorage.getItem('token');
-            if (!storedToken) return setToken(null);
+            if (!storedToken) {
+                setToken(null);
+                setLoading(false);
+                return;
+            }
 
             try {
                 const decoded = jwtDecode(storedToken);
                 const isExpired = decoded.exp * 1000 < Date.now();
-                setToken(isExpired ? null : storedToken);
+
+                if (isExpired) {
+                    localStorage.removeItem('token');
+                    setToken(null);
+                } else {
+                    setToken(storedToken);
+                }
             } catch {
                 setToken(null);
             }
+
+            setLoading(false);
+        };
+
+        checkToken();
+
+        const syncAuth = () => {
+            checkToken();
         };
 
         window.addEventListener('storage', syncAuth);
@@ -49,7 +67,7 @@ export function AuthProvider({ children }) {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ token, isLoggedIn: Boolean(token), login, logout }}>
+        <AuthContext.Provider value={{ token, isLoggedIn: Boolean(token), login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     )

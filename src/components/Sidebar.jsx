@@ -19,6 +19,7 @@ export default function Sidebar() {
             <nav className="flex-1">
                 <ul className="menu gap-1">
                     <NavItem to="/dashboard" label="Dashboard" />
+                    <NavItem label="Recommendations" comingSoon />
                     <NavItem label="Profile" comingSoon />
                     <NavItem label="Settings" comingSoon />
                 </ul>
