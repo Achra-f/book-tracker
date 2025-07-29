@@ -20,6 +20,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import Toast from "daisyui/components/toast/index.js";
+import Discover from "./pages/books/discover.jsx";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -80,6 +81,7 @@ function AppRouter() {
             <Route element={<ProtectedRoute />}>
                 <Route element={<DashboardLayout />}>
                     <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="discover" element={<Discover />} />
                     <Route path="books">
                         <Route index element={<Index />} />
                         <Route path="add" element={<Create />} />
