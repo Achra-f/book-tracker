@@ -1,12 +1,63 @@
-# React + Vite
+# Book Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Book Tracker is a React app that lets users log in, add, view, edit, and delete books from their personal collection. It connects to a custom backend API to manage and persist book data.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User authentication (login & signup)
+- Add new books to your collection
+- View a list of your added books (with caching and auto-refetching)
+- Edit or delete existing books
+- Real-time data fetching with React Query (Tanstack Query)
+- Responsive UI styled with Tailwind CSS and DaisyUI
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React 19
+- Vite for build and dev server
+- React Router DOM for routing
+- Tanstack React Query for data fetching and caching
+- Tailwind CSS + DaisyUI for styling
+- JWT for authentication handling
+- Zod for validation
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (recommended version: latest LTS)
+- API base URL: https://books-api-1jwf.onrender.com
+
+### Environment Variables
+
+Create a `.env` file at the root of the project with the following:
+
+```bash
+VITE_BOOK_API_BASE_URL=https://books-api-1jwf.onrender.com
+```
+
+## Installation
+```bash
+# 1. Clone the repo
+git clone https://github.com/Achra-f/book-tracker.git
+cd book-tracker
+
+# 2. Install dependencies
+npm install
+
+# 3. Start the development server:
+npm run dev
+```
+
+## Usage
+
+1. Open the app in your browser.
+2. Sign up or log in with your credentials
+3. Add new books by providing title, author, etc.
+4. View your book list — it's automatically cached with TanStack React Query
+5. Edit or delete entries as needed
+
+## Project Status
+
+This project is under active development. Core features are functional, but additional improvements and refinements are planned.
+
